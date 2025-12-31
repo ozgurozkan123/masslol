@@ -1,10 +1,19 @@
 FROM python:3.11-slim
 
-# Install system dependencies including masscan
+# Install system dependencies including masscan and sudo
 RUN apt-get update && apt-get install -y \
     masscan \
+    sudo \
     curl \
+    libcap2-bin \
     && rm -rf /var/lib/apt/lists/*
+
+# Give masscan the capability to use raw sockets without full root
+# This allows masscan to send raw packets
+RUN setcap cap_net_raw+ep /usr/bin/masscan
+
+# Configure sudo to allow masscan without password for any user
+RUN echo "ALL ALL=(ALL) NOPASSWD: /usr/bin/masscan" >> /etc/sudoers
 
 WORKDIR /app
 
