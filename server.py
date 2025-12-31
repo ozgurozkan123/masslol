@@ -17,14 +17,14 @@ def do_masscan(target: str, port: str, masscan_args: list[str] = None) -> str:
         port: Target port. Example: 1234 or 0-65535
         masscan_args: Additional masscan arguments like --max-rate
     """
-    # Build command arguments
-    cmd = ["masscan", "-p" + port, target]
+    # Build command arguments - use sudo for raw packet access
+    cmd = ["sudo", "masscan", "-p" + port, target]
     
     if masscan_args:
         cmd.extend(masscan_args)
     
     try:
-        # Run masscan
+        # Run masscan with sudo
         result = subprocess.run(
             cmd,
             capture_output=True,
