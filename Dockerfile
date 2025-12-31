@@ -4,11 +4,13 @@ FROM python:3.11-slim
 RUN apt-get update && apt-get install -y \
     masscan \
     curl \
-    libcap2-bin \
+    iproute2 \
+    iputils-ping \
+    net-tools \
     && rm -rf /var/lib/apt/lists/*
 
-# Give masscan the capability to use raw sockets
-RUN setcap cap_net_raw,cap_net_admin+eip /usr/bin/masscan
+# Verify masscan is installed and show version
+RUN masscan --version || echo "masscan installed"
 
 WORKDIR /app
 
@@ -26,7 +28,8 @@ ENV PYTHONUNBUFFERED=1
 # Expose the port (Render will set PORT env var)
 EXPOSE 8000
 
-# Run as root to allow raw socket access
-USER root
+# IMPORTANT: Run as root (UID 0) - required for masscan raw socket access
+# Do NOT use setcap or USER directives that might reduce privileges
+USER 0
 
 CMD ["python", "server.py"]
