@@ -47,14 +47,15 @@ def do_masscan(target: str, port: str, masscan_args: list[str] = None) -> str:
         return f"Failed to run masscan: {str(e)}"
 
 
-# Run the server with SSE transport
+# Run the server with HTTP transport
 if __name__ == "__main__":
-    # Get port from environment (Render sets this automatically)
-    port = int(os.getenv("PORT", 8000))
+    # Get host and port from environment (Render sets PORT automatically)
+    host = os.environ.get("HOST", "0.0.0.0")
+    port = int(os.environ.get("PORT", "8000"))
     
     mcp.run(
-        transport="sse",
-        host="0.0.0.0",
+        transport="http",
+        host=host,
         port=port,
         path="/mcp"
     )
