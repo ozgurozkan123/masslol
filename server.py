@@ -1,5 +1,4 @@
 import os
-import subprocess
 from fastmcp import FastMCP
 
 # Create the MCP server
@@ -98,14 +97,14 @@ Masscan sends SYN packets directly (bypassing the OS TCP stack) for speed.
 This requires CAP_NET_RAW capability, which cloud platforms disable for security."""
 
 
-# Run the server with SSE transport (provides both /mcp and /mcp/sse endpoints)
+# Run the server with HTTP transport
 if __name__ == "__main__":
     # Get host and port from environment (Render sets PORT automatically)
     host = os.environ.get("HOST", "0.0.0.0")
     port = int(os.environ.get("PORT", "8000"))
     
     mcp.run(
-        transport="sse",  # SSE provides both HTTP (/mcp) and SSE (/mcp/sse) endpoints
+        transport="http",
         host=host,
         port=port,
         path="/mcp"
